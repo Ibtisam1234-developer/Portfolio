@@ -1,62 +1,98 @@
-import Image from "next/image";
-import Link from "next/link";
+'use client';
+
+import Image from 'next/image'
+import React from 'react'
+
+// --- TypewriterTitle component (copied from ClientLayout.tsx) ---
+function TypewriterTitle({ words, className = "" }: { words: string[], className?: string }) {
+  const [activeIndex, setActiveIndex] = React.useState(0);
+  const [cycle, setCycle] = React.useState(0); // force re-render to trigger next word
+  const [isDeleting, setIsDeleting] = React.useState(false);
+  const [charIndex, setCharIndex] = React.useState(0);
+  const [blink, setBlink] = React.useState(true);
+
+  React.useEffect(() => {
+    const word = words[activeIndex];
+    let timer: NodeJS.Timeout;
+    if (!isDeleting && charIndex <= word.length) {
+      timer = setTimeout(() => setCharIndex(charIndex + 1), 120);
+    } else if (!isDeleting && charIndex > word.length) {
+      timer = setTimeout(() => setIsDeleting(true), 1200);
+    } else if (isDeleting && charIndex >= 0) {
+      timer = setTimeout(() => setCharIndex(charIndex - 1), 60);
+    } else if (isDeleting && charIndex < 0) {
+      setIsDeleting(false);
+      setActiveIndex((activeIndex + 1) % words.length);
+      setCharIndex(0);
+      setCycle(cycle + 1);
+    }
+    return () => clearTimeout(timer);
+  }, [charIndex, isDeleting, activeIndex, words, cycle]);
+
+  React.useEffect(() => {
+    const blinkTimer = setInterval(() => setBlink(b => !b), 500);
+    return () => clearInterval(blinkTimer);
+  }, []);
+
+  // Find the longest word for minWidth
+  const maxLen = Math.max(...words.map(w => w.length));
+  return (
+    <span
+      className={className + " font-mono text-center mx-auto block"}
+      style={{ letterSpacing: '1.5px', minWidth: `${maxLen + 2}ch` }}
+    >
+      {words.map((word, i) => (
+        <span key={i} className="block min-h-[1.2em]">
+          {i === activeIndex
+            ? word.slice(0, charIndex) + (blink ? '|' : ' ')
+            : '\u00A0'}
+        </span>
+      ))}
+    </span>
+  );
+}
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 flex items-center justify-center p-8">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between space-y-8 md:space-y-0 md:space-x-12">
-        {/* Left Side - Text Content */}
-        <div className="md:w-1/2 text-center md:text-left space-y-6 transform transition-all duration-500 hover:scale-105">
-          <div className="relative">
-            <span className="absolute -top-2 -left-4 text-6xl text-blue-200 opacity-50">❝</span>
-            <h1 className="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 leading-tight">
-              John Doe
-            </h1>
-            <span className="absolute -bottom-2 -right-4 text-6xl text-blue-200 opacity-50">❞</span>
-          </div>
-          
-          <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 animate-pulse">
-            Frontend Wizard & Design Alchemist
-          </h2>
-          
-          <p className="text-lg text-gray-600 leading-relaxed shadow-sm p-4 bg-white/60 rounded-xl backdrop-blur-sm hover:bg-white/80 transition-all duration-300">
-            Crafting digital experiences that breathe life into pixels. 
-            Transforming complex ideas into elegant, intuitive interfaces 
-            with a touch of magic ✨
-          </p>
-          
-          <div className="flex flex-col md:flex-row justify-center md:justify-start space-y-4 md:space-y-0 md:space-x-4">
-            <Link 
-              href="/projects" 
-              className="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full shadow-xl transform transition-all duration-300 hover:scale-110 hover:shadow-2xl hover:rotate-3 text-center"
-            >
-              Explore Projects
-            </Link>
-            <Link 
-              href="/contact" 
-              className="px-8 py-3 border-2 border-blue-500 text-blue-600 rounded-full shadow-md transform transition-all duration-300 hover:scale-110 hover:bg-blue-50 text-center"
-            >
-              Get in Touch
-            </Link>
-          </div>
+    <div className="min-h-screen flex flex-col justify-center items-center text-center animate-fade-in">
+      <div className="max-w-4xl mx-auto px-4">
+        <div className="relative w-48 h-48 mx-auto mb-6 hover-scale animate-stagger">
+          <Image 
+            src="/profile.jpeg" 
+            alt="Profile Picture" 
+            fill 
+            priority 
+            className="rounded-full object-cover border-4 border-blue-500 shadow-lg"
+          />
         </div>
+
+        <div className="flex flex-col items-center mb-4">
+  <span className="block text-3xl md:text-6xl font-extrabold text-gray-900 dark:text-white leading-tight mb-2">Hi, I am</span>
+  <TypewriterTitle
+    words={["Muhammad Ibtisam", "Python Developer", "AI Enthusiast"]}
+    className="text-4xl md:text-7xl font-extrabold text-blue-600 text-center" />
+</div>   
+        <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 animate-stagger">
+          Passionate Python developer specializing in building robust applications, automations, and data-driven solutions. 
+          Transforming ideas into efficient, scalable Python code for web, automation, and data science projects.
+          Let&apos;s bring your Python project to life! 🐍
+        </p>
         
-        {/* Right Side - Profile Image */}
-        <div className="md:w-1/2 flex justify-center relative">
-          <div className="relative w-64 h-64 md:w-96 md:h-96">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full animate-blob opacity-70 blur-2xl"></div>
-            <Image 
-              src="/profile.jpg" 
-              alt="Profile Picture" 
-              width={500} 
-              height={500} 
-              priority
-              className="relative z-10 rounded-full object-cover w-full h-full shadow-2xl transform transition-all duration-500 hover:scale-105 hover:rotate-6"
-            />
-            <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-green-400 rounded-full animate-bounce opacity-70 blur-xl"></div>
-          </div>
+        <div className="flex justify-center space-x-4 animate-stagger">
+          <a 
+            href="/projects" 
+            className="px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition transform hover:scale-105 shadow-md"
+          >
+            View Projects
+          </a>
+          <a 
+            href="/contact" 
+            className="px-6 py-3 border-2 border-blue-600 text-blue-600 rounded-full hover:bg-blue-50 transition transform hover:scale-105"
+          >
+            Get in Touch
+          </a>
         </div>
       </div>
     </div>
-  );
+  )
 }

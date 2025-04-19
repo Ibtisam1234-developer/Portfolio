@@ -1,27 +1,27 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import Navbar from "@/components/Navbar";
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+import ClientLayout from './ClientLayout'
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: "Frontend Developer Portfolio",
-  description: "Showcasing skills, projects, and expertise in web development",
-  keywords: ["frontend developer", "web developer", "portfolio", "next.js", "react"],
-};
+  title: 'Your Portfolio',
+  description: 'A modern, elegant portfolio showcasing skills and projects',
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} bg-gray-50 text-gray-900`}>
-        <Navbar />
-        {children}
+    <html lang="en" className="scroll-smooth">
+      <body className={`${inter.className} bg-gray-50 dark:bg-gray-900`}>
+        <ClientLayout>
+          {children}
+        </ClientLayout>
       </body>
     </html>
-  );
+  )
 }

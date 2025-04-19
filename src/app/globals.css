@@ -3,9 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  --foreground-rgb: 0, 0, 0;
+  --primary-color: #3B82F6;
+  --secondary-color: #10B981;
+  --accent-color: #6366F1;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,6 +27,82 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+  scroll-behavior: smooth;
+}
+
+/* Enhanced Transitions */
+* {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Advanced Hover Effects */
+.hover-scale {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+/* Fade In Animations */
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Staggered Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-stagger {
+  opacity: 0;
+  animation: slideIn 0.5s forwards;
+}
+
+.animate-stagger:nth-child(1) { animation-delay: 0.1s; }
+.animate-stagger:nth-child(2) { animation-delay: 0.2s; }
+.animate-stagger:nth-child(3) { animation-delay: 0.3s; }
+.animate-stagger:nth-child(4) { animation-delay: 0.4s; }
+.animate-stagger:nth-child(5) { animation-delay: 0.5s; }
+.animate-stagger:nth-child(6) { animation-delay: 0.6s; }
+.animate-stagger:nth-child(7) { animation-delay: 0.7s; }
+.animate-stagger:nth-child(8) { animation-delay: 0.8s; }
+
+/* Subtle Gradient Backgrounds */
+.gradient-bg {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+}
+
+/* Glassmorphism Card Style */
+.glass-card {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.4s, box-shadow 0.4s;
+}
+
+.glass-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 @layer utilities {
